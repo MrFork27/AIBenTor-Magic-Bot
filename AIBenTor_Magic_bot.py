@@ -83,6 +83,31 @@ def get_card_rules(message):
             bot.reply_to(message, "Ups, ha ocurrido un error :(")
 
 
+# Get the card rules
+@bot.message_handler(chat_id=ALLOWED_CHATS, commands=['getCardBestStrategy'])
+def get_card_best_strategy(message):
+    card_name = message.text[14:]
+    if (card_name.replace(' ', '') == ''):
+        bot.reply_to(
+            message,
+            "Ups, necesito que escribas el nombre de una carta"
+        )
+    else:
+        try:
+            promp_message = "A partir del juego de cartas Magic The Gathering, explica la mejor estrategia ganadora para jugar la carta de nombre \"" + card_name + "\""
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": promp_message}
+                ]
+            )
+            response_message = response.choices[0].message.content
+            bot.reply_to(message, response_message)
+        except Exception as err:
+            bot.reply_to(message, "Ups, ha ocurrido un error :(")
+
+
 # Custom filters
 # Check if user is an admin or cretor of a group
 class IsAdmin(custom_filters.SimpleCustomFilter):
