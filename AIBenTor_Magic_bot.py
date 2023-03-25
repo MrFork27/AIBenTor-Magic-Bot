@@ -29,7 +29,7 @@ def send_start(message):
 
 
 # Find a card by foreign name
-@bot.message_handler(chat_id=ALLOWED_CHATS, commands=['findByForeignName'])
+""" @bot.message_handler(chat_id=ALLOWED_CHATS, commands=['findByForeignName'])
 def find_by_foreign_name(message):
     card_name = message.text[19:]
     if (card_name.replace(' ', '') == ''):
@@ -56,6 +56,7 @@ def find_by_foreign_name(message):
             bot.reply_to(message, card_info)
         except Exception as err:
             bot.reply_to(message, "Ups, ha ocurrido un error :(")
+"""
 
 
 # Get the card rules
