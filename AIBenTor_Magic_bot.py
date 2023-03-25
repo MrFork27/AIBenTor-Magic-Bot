@@ -1,4 +1,5 @@
 import telebot
+from mtgsdk import Card
 from config import BOT_TOKEN, ALLOWED_CHATS, OPENAI_API_KEY
 from telebot import custom_filters
 
@@ -20,6 +21,37 @@ def admin_get_chat_id(message):
 def send_start(message):
     reply_message = "Hola, soy AIBenTor Magic Bot!!!"
     bot.reply_to(message, reply_message)
+
+
+# Find a card by foreign name
+@bot.message_handler(chat_id=ALLOWED_CHATS, commands=['findByForeignName'])
+def find_by_foreign_name(message):
+    card_name = message.text[19:]
+    if (card_name.replace(' ', '') == ''):
+        bot.reply_to(
+            message,
+            "Ups, necesito que escribas el nombre de una carta"
+        )
+    else:
+        try:
+            card_info = Card.where(name=card_name).where(
+                language='spanish').all()
+            # Check if card exists
+            if len(card_info) > 0:
+                # Get the Spanish card
+                foreign_names = card_info[0].foreign_names
+                card_info = dict(list(filter(
+                    lambda card: card['language'] == 'Spanish',
+                    foreign_names))[0])
+                card_info = card_info['text']
+            else:
+                card_info = 'Ups, parece que la carta no existe'
+
+            # return card information
+            bot.reply_to(message, card_info)
+        except Exception as err:
+            print(err)
+            bot.reply_to(message, "Ups, ha ocurrido un error :(")
 
 
 # Custom filters
