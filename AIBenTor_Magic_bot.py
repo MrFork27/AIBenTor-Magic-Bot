@@ -24,7 +24,7 @@ def admin_get_chat_id(message):
 # Start, hello
 @bot.message_handler(chat_id=ALLOWED_CHATS, commands=['start', 'hello'])
 def send_start(message):
-    reply_message = "Hola, soy AIBenTor Magic Bot!!!"
+    reply_message = "Hola, soy AIBenTor Magic Bot!!!\n\nDe momento solo puedes usar los comando /start, /hello, /getCardRules y /getCardBestStrategy"
     bot.reply_to(message, reply_message)
 
 
@@ -87,7 +87,7 @@ def get_card_rules(message):
 # Get the card rules
 @bot.message_handler(chat_id=ALLOWED_CHATS, commands=['getCardBestStrategy'])
 def get_card_best_strategy(message):
-    card_name = message.text[14:]
+    card_name = message.text[21:]
     if (card_name.replace(' ', '') == ''):
         bot.reply_to(
             message,
