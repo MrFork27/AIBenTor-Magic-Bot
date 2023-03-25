@@ -43,14 +43,13 @@ def find_by_foreign_name(message):
                 card_info = dict(list(filter(
                     lambda card: card['language'] == 'Spanish',
                     foreign_names))[0])
-                card_info = card_info['text']
+                card_info = "**Descripción:**\n\n" + card_info['text']
             else:
                 card_info = 'Ups, parece que la carta no existe'
 
             # return card information
             bot.reply_to(message, card_info)
         except Exception as err:
-            print(err)
             bot.reply_to(message, "Ups, ha ocurrido un error :(")
 
 
