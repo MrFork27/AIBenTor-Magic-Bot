@@ -1,4 +1,5 @@
 import telebot
+import openai
 from mtgsdk import Card
 from config import BOT_TOKEN, ALLOWED_CHATS, OPENAI_API_KEY
 from telebot import custom_filters
@@ -6,6 +7,10 @@ from telebot import custom_filters
 
 # Bot
 bot = telebot.TeleBot(BOT_TOKEN)
+
+
+# Save the OpenAI API key
+openai.api_key = OPENAI_API_KEY
 
 
 # Admin commands
@@ -49,6 +54,31 @@ def find_by_foreign_name(message):
 
             # return card information
             bot.reply_to(message, card_info)
+        except Exception as err:
+            bot.reply_to(message, "Ups, ha ocurrido un error :(")
+
+
+# Get the card rules
+@bot.message_handler(chat_id=ALLOWED_CHATS, commands=['getCardRules'])
+def get_card_rules(message):
+    card_name = message.text[14:]
+    if (card_name.replace(' ', '') == ''):
+        bot.reply_to(
+            message,
+            "Ups, necesito que escribas el nombre de una carta"
+        )
+    else:
+        try:
+            promp_message = "A partir del juego de cartas Magic The Gathering, explica como jugar la carta de nombre \"" + card_name + "\""
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": promp_message}
+                ]
+            )
+            response_message = response.choices[0].message.content
+            bot.reply_to(message, response_message)
         except Exception as err:
             bot.reply_to(message, "Ups, ha ocurrido un error :(")
 
